@@ -1,140 +1,186 @@
-# NZT-48 — two Claude Skills
+<div align="center">
 
-> *"What if I told you that you could access 100% of your brain?"*
+# NZT-48
 
-**NZT-48** is a pair of [Claude Skills](https://docs.claude.com) that make Claude think like a person who just took the fictional pill from *Limitless*. Same pill, two ways to use it:
+**Two Claude Skills built on the fictional pill from *Limitless*.**<br>
+One thinks at 100%. The other executes at 100%.
 
-| | **nzt-limitless** (default) | **nzt-soldier** |
+[![Release](https://img.shields.io/github/v/release/yintong-dev/NZT-48?style=flat-square)](https://github.com/yintong-dev/NZT-48/releases/latest)
+[![License: MIT](https://img.shields.io/github/license/yintong-dev/NZT-48?style=flat-square)](LICENSE)
+![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-d97757?style=flat-square)
+![Claude.ai](https://img.shields.io/badge/Claude.ai-skill-d97757?style=flat-square)
+![Codex](https://img.shields.io/badge/Codex-skill-111111?style=flat-square)
+
+[Overview](#overview) · [Quick start](#quick-start) · [Install](#install) · [Examples](#examples) · [How it works](#how-it-works)
+
+</div>
+
+---
+
+## Overview
+
+NZT-48 turns Claude into a sharper collaborator for hard problems. It is a disciplined way of reasoning with a persona on top, not a gimmick. Pick the one that fits the moment:
+
+| | 🧠 **nzt-limitless** · *default* | 🎯 **nzt-soldier** |
 |---|---|---|
-| Style | Fast, magnetic, pattern-obsessed, decisive | Cold, decisive, goal-obsessed |
-| Output | Reframe → pattern → move → catch | Objective → numbered steps → risk |
-| Words | As many as the problem earns | Only what the objective needs |
-| Triggers | On request, and automatically on hard problems | Only on explicit request |
+| **Personality** | Fast, magnetic, pattern-obsessed | Cold, decisive, goal-obsessed |
+| **Answer shape** | Reframe → pattern → move → catch | Objective → numbered steps → risk |
+| **Length** | As long as the problem earns | Only what the objective needs |
+| **Activates** | On request *and* automatically on hard problems | Only when you ask for it |
+| **Best for** | Strategy, tangled decisions, "I'm stuck" | Getting something done, saving tokens |
 
-## The two skills
+Both skills share the same rules: they never invent facts, they say where they might be wrong, and they drop the act when you need a human answer.
 
-### nzt-limitless
+## Quick start
 
-A **thinking style plus a voice**. On hard problems it reframes the real question, connects ideas across fields, compresses the mess into a model, commits to a recommendation, and then honestly attacks its own answer.
-
-- **Reframes** your question into the one that actually matters
-- **Cross-pollinates** insights from unrelated domains (only when they genuinely sharpen the point)
-- **Compresses** complexity into a structure you can hold in your head
-- **Decides**: ranked recommendation plus a concrete first move
-- **Stays honest**: flags uncertainty, never fabricates, always names where it could be wrong
-
-Triggers on "NZT mode", "limitless mode", "Eddie Morra", "genius mode", `/nzt-limitless`, and automatically on complex problems, tough decisions, strategy, and "I'm stuck" situations. When it triggers automatically, it uses a lighter version: the clarity without the theatrics.
-
-### nzt-soldier
-
-Every thought points at the objective. It picks the single highest-leverage path, gives the steps, and stops. No preamble, no recap, no analogies, no humor: fewer words, fewer tokens. It asks a question only when it cannot proceed without the answer.
-
-Triggers only when you ask for it: `/nzt-soldier`, "nzt-soldier", "NZT soldier", "soldier mode".
-
-## How to invoke
-
-| Where | Limitless | Soldier |
-|---|---|---|
-| Claude Code (installer) | `/nzt-limitless` | `/nzt-soldier` |
-| Claude Code (plugin) | `/nzt-48:nzt-limitless` | `/nzt-48:nzt-soldier` |
-| Codex | `$nzt-limitless` | `$nzt-soldier` |
-| Claude.ai | "limitless mode" or just ask | "nzt-soldier: …" |
-
-## Install
-
-### Claude.ai / Claude app
-1. Download `nzt-limitless.skill` and/or `nzt-soldier.skill` from the latest [Release](https://github.com/yintong-zhou/NZT-48/releases/latest).
-2. Go to **Settings → Capabilities → Skills** and upload them.
-
-### Claude Code
-
-**Option A: plugin marketplace (recommended, gets updates).** Inside Claude Code:
+**Claude Code** (recommended):
 
 ```
-/plugin marketplace add yintong-zhou/NZT-48
+/plugin marketplace add yintong-dev/NZT-48
 /plugin install nzt-48@nzt-48
 ```
 
-Or from your shell: `claude plugin marketplace add yintong-zhou/NZT-48 && claude plugin install nzt-48@nzt-48`. The plugin ships both skills as `/nzt-48:nzt-limitless` and `/nzt-48:nzt-soldier`.
+Then just ask a hard question, or call a skill directly:
 
-**Option B: personal skills.** Installs both skills to `~/.claude/skills/nzt-limitless` and `~/.claude/skills/nzt-soldier`:
+| Where | Limitless | Soldier |
+|---|---|---|
+| Claude Code · plugin | `/nzt-48:nzt-limitless` | `/nzt-48:nzt-soldier` |
+| Claude Code · installer | `/nzt-limitless` | `/nzt-soldier` |
+| Codex | `$nzt-limitless` | `$nzt-soldier` |
+| Claude.ai | "limitless mode", or just ask | "nzt-soldier: …" |
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/yintong-zhou/NZT-48/main/install.sh | bash -s -- claude
+## Install
+
+<details open>
+<summary><b>Claude Code</b></summary>
+
+**Plugin (gets updates).** Inside Claude Code:
+
+```
+/plugin marketplace add yintong-dev/NZT-48
+/plugin install nzt-48@nzt-48
 ```
 
-### Codex
-
-Installs both skills to `~/.agents/skills/`, where Codex looks for user skills:
+Or from your shell:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yintong-zhou/NZT-48/main/install.sh | bash -s -- codex
+claude plugin marketplace add yintong-dev/NZT-48 && claude plugin install nzt-48@nzt-48
 ```
 
-Restart Codex afterwards. Inside Codex you can also ask the built-in `$skill-installer` to install the skills from `https://github.com/yintong-zhou/NZT-48`.
+**Personal skills.** Copies both skills to `~/.claude/skills/`:
 
-### Both at once
+```bash
+curl -fsSL https://raw.githubusercontent.com/yintong-dev/NZT-48/main/install.sh | bash -s -- claude
+```
+
+</details>
+
+<details>
+<summary><b>Codex</b></summary>
+
+Copies both skills to `~/.agents/skills/`, where Codex looks for user skills:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/yintong-dev/NZT-48/main/install.sh | bash -s -- codex
+```
+
+Restart Codex afterwards. You can also ask Codex's built-in `$skill-installer` to install them from `https://github.com/yintong-dev/NZT-48`.
+
+</details>
+
+<details>
+<summary><b>Claude.ai / Claude app</b></summary>
+
+1. Download `nzt-limitless.skill` and/or `nzt-soldier.skill` from the [latest release](https://github.com/yintong-dev/NZT-48/releases/latest).
+2. Open **Settings → Capabilities → Skills** and upload them.
+
+</details>
+
+<details>
+<summary><b>Claude Code + Codex at once</b></summary>
 
 macOS / Linux / Git Bash:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yintong-zhou/NZT-48/main/install.sh | bash -s -- all
+curl -fsSL https://raw.githubusercontent.com/yintong-dev/NZT-48/main/install.sh | bash -s -- all
 ```
 
 Windows PowerShell:
 
 ```powershell
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/yintong-zhou/NZT-48/main/install.ps1))) -Target all
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/yintong-dev/NZT-48/main/install.ps1))) -Target all
 ```
 
-From a clone, run `./install.sh [claude|codex|all]` or `.\install.ps1 -Target <claude|codex|all>`. Set `NZT48_REF` to install a specific tag (e.g. `NZT48_REF=v1.1.0`). Re-running the installer updates the skills in place.
+From a clone: `./install.sh [claude|codex|all]` or `.\install.ps1 -Target <claude|codex|all>`.
 
-**Upgrading from v1.0:** the old single skill was called `nzt-48`. The installers remove a leftover `nzt-48` folder automatically; plugin users just update the plugin.
+</details>
 
-## Repo structure
+> [!TIP]
+> Re-run the installer to update. Set `NZT48_REF` to pin a version, e.g. `NZT48_REF=v1.1.0`.
 
-```
-.
-├── skills/
-│   ├── nzt-limitless/
-│   │   ├── SKILL.md                     # The default skill
-│   │   └── references/voice-and-examples.md
-│   └── nzt-soldier/
-│       ├── SKILL.md                     # The terse execution skill
-│       └── references/examples.md
-├── .claude-plugin/                      # Claude Code plugin + marketplace manifests
-├── install.sh / install.ps1             # Installers for Claude Code and Codex
-├── .github/workflows/release.yml        # Builds one .skill per skill on every v* tag
-├── README.md
-└── LICENSE
-```
+> [!NOTE]
+> **Upgrading from v1.0?** The single `nzt-48` skill is now `nzt-limitless`, and the plugin command `/nzt-48:nzt-48` is now `/nzt-48:nzt-limitless`. The installers remove the old `nzt-48` folder for you.
 
 ## Examples
 
-**You:** Should I quit my stable job to start a company?
+Same question, two skills:
 
-**nzt-limitless:** Wrong question. "Quit or stay" is a binary, and binaries are where good decisions go to die. The real question is: *what is the cheapest experiment that tells me if this business is real?* …
+> **You:** Should I quit my stable job to start a company?
 
-(See `skills/nzt-limitless/references/voice-and-examples.md` for the full exchange.)
+<table>
+<tr>
+<th width="50%">🧠 nzt-limitless</th>
+<th width="50%">🎯 nzt-soldier</th>
+</tr>
+<tr>
+<td valign="top">
 
-**You:** /nzt-soldier Should I quit my stable job to start a company?
+Wrong question. "Quit or stay" is a binary, and binaries are where good decisions go to die. The real question is: *what is the cheapest experiment that tells me if this business is real?*
 
-**nzt-soldier:**
-> Objective: validate the business before risking income.
-> 1. Keep the job.
-> 2. Get one paying customer in 90 days, working evenings.
-> 3. Quit only when revenue repeats and savings cover 9-12 months.
-> Risk: capital-heavy or regulated businesses can't be tested part-time.
-> Not a financial professional; this is only my opinion.
+Think of a pilot testing a wing: you don't fly the plane to see if it stalls, you use a wind tunnel first…
 
-## Honest disclaimer
+</td>
+<td valign="top">
 
-NZT-48 is **fictional**. The "we only use 10% of our brains" idea is a myth; we use virtually all of our brain. These skills don't unlock anything in Claude or in you. They apply a disciplined, high-clarity way of reasoning wrapped in a fun persona. They do not give advice on real drugs or "smart pills," and on medical, legal, or financial topics they remind you they are not a professional.
+Objective: validate the business before risking income.
+1. Keep the job.
+2. Get one paying customer in 90 days, working evenings.
+3. Quit only when revenue repeats and savings cover 9-12 months.
 
-## Contributing
+Risk: capital-heavy or regulated businesses can't be tested part-time.<br>
+Not a financial professional; this is only my opinion.
 
-Issues and PRs welcome: new voice examples, sharper reasoning moves, translations.
+</td>
+</tr>
+</table>
 
-## License
+More examples live in [`voice-and-examples.md`](skills/nzt-limitless/references/voice-and-examples.md) and [`examples.md`](skills/nzt-soldier/references/examples.md).
 
-MIT — see [LICENSE](LICENSE).
+## How it works
+
+**nzt-limitless** runs six moves on every substantive problem and shows you the result, not the machinery: reframe the question, scan the whole board, borrow a pattern from another field (only if it sharpens the point), compress it into a model, decide, then attack its own answer. When it activates on its own, it keeps the clarity and skips the theatrics.
+
+**nzt-soldier** runs a mission loop: identify the objective, pick the single highest-leverage path, give the steps, stop. It asks a question only when it is blocked; otherwise it states its assumption in one line and moves on.
+
+**Both** follow five non-negotiables: no fabrication, calibrated confidence, NZT stays fiction, humans first when you're struggling, and a clear "not a professional" note on medical, legal, and financial topics.
+
+<details>
+<summary><b>Repository layout</b></summary>
+
+```
+skills/
+├── nzt-limitless/
+│   ├── SKILL.md
+│   └── references/voice-and-examples.md
+└── nzt-soldier/
+    ├── SKILL.md
+    └── references/examples.md
+.claude-plugin/              # Claude Code plugin + marketplace manifests
+install.sh / install.ps1     # Installers for Claude Code and Codex
+.github/workflows/release.yml  # Builds one .skill per skill on every v* tag
+```
+
+</details>
+
+> [!IMPORTANT]
+> NZT-48 is **fictional**, and the "we only use 10% of our brains" idea is a myth: we use virtually all of it. These skills don't unlock anything in Claude or in you. They don't give advice on real drugs or "smart pills", and on medical, legal, or financial topics they remind you they are not a professional.

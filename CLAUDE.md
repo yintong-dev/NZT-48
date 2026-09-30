@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Guidance for Claude (Claude Code, Claude.ai, or any agent) when working in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository. The same rules apply to any other agent working here.
 
 ## Project overview
 
@@ -16,31 +16,25 @@ Guidance for Claude (Claude Code, Claude.ai, or any agent) when working in this 
 ## Repository structure
 
 ```
-.
-├── skills/
-│   ├── nzt-limitless/
-│   │   ├── SKILL.md               # Default skill: frontmatter + instructions
-│   │   └── references/
-│   │       └── voice-and-examples.md  # Voice dials, before/after examples, failure modes
-│   └── nzt-soldier/
-│       ├── SKILL.md               # Terse execution skill
-│       └── references/
-│           └── examples.md        # Generic vs soldier contrasts
-├── README.md                      # Public-facing docs and install instructions
-├── LICENSE                        # MIT
-├── .claude-plugin/
-│   ├── plugin.json                # Claude Code plugin manifest; skills auto-discovered from skills/
-│   └── marketplace.json           # Makes the repo installable via /plugin marketplace add
-├── install.sh / install.ps1       # Installers: ~/.claude/skills (Claude Code), ~/.agents/skills (Codex)
-├── .github/workflows/release.yml  # Packages one .skill per skill and attaches them on every v* tag
-└── CLAUDE.md                      # This file (repo-only, NOT shipped in the .skill package)
+skills/<name>/SKILL.md + references/   # The two skills (the only shipped content, plus LICENSE)
+.claude-plugin/                        # plugin.json + marketplace.json (repo root = plugin + marketplace)
+install.sh / install.ps1               # Installers: ~/.claude/skills (Claude Code), ~/.agents/skills (Codex)
+.github/workflows/release.yml          # Builds one .skill per skill on every v* tag
+docs/superpowers/                      # Design specs and implementation plans (repo-only)
 ```
 
 Only `skills/<name>/` (plus `LICENSE`, copied into each skill folder at install/package time) is shipped. Everything else is distribution tooling and is never copied into a `.skill` package or an installed skill folder.
 
+### How distribution fits together
+
+- **Plugin:** the repo root is both the marketplace (`source: "./"`) and the plugin. Claude Code auto-discovers `skills/*/SKILL.md`. A root-level `SKILL.md` would only load if `skills/` did not exist, so never put one back at the root.
+- **Installers:** use the local checkout when `skills/nzt-limitless/SKILL.md` sits next to the script, otherwise download the `NZT48_REF` tarball/zip from GitHub. Before touching anything they check every skill exists in the source and abort otherwise (protects users pinning a pre-1.1.0 ref). Then they delete a legacy `<target>/nzt-48` folder and replace each skill folder wholesale.
+- **Skill list lives in three places:** `install.sh` (`SKILLS`), `install.ps1` (`$Skills`), `release.yml` (the `for s in` loop). Keep them in sync.
+- **Line endings:** `.gitattributes` forces LF on `*.sh`; without it a Windows clone breaks `install.sh` (`set -euo pipefail\r`).
+
 ## The non-negotiables (never weaken these)
 
-These live in each skill's `SKILL.md` under "The non-negotiables" (`nzt-soldier` uses a compressed wording of the same five rules). Any edit must preserve them in both:
+These live in each skill's `SKILL.md` (`## The non-negotiables` in nzt-limitless, `## Non-negotiables` in nzt-soldier, which uses a compressed wording of the same five rules). Any edit must preserve them in both:
 
 1. **Accuracy over confidence theater.** No fabricated facts, numbers, quotes, or sources. State the edge of knowledge.
 2. **Calibration.** Separate known / inferred / guessed.
@@ -54,7 +48,7 @@ If a proposed change makes the persona more convincing at the cost of any of the
 
 ### Both skills
 
-- Keep each `SKILL.md` under 500 lines. Push long material into `references/` and point to it from `SKILL.md` with a note on when to read it.
+- Keep each `SKILL.md` under 200 lines. Push long material into `references/` and point to it from `SKILL.md` with a note on when to read it.
 - Frontmatter requires only `name` and `description`. `name` must match the folder: `nzt-limitless`, `nzt-soldier`.
 - The `description` is the triggering mechanism. Put all "when to use" info there, not in the body.
 - Write instructions in the imperative, and explain the *why* behind rules rather than piling up rigid ALWAYS/NEVER lines (except the non-negotiables above).
@@ -84,6 +78,7 @@ If a proposed change makes the persona more convincing at the cost of any of the
 ### Docs
 
 - `README.md` and all repo files are in English.
+- Keep every published Markdown file under 200 lines. If it grows past that, split it by topic into separate `.md` files and link them. Exception: superpowers specs and plans in `docs/superpowers/` follow that skill's own format.
 - Keep the disclaimer in the README: NZT-48 is fictional and the "10% of the brain" idea is a myth.
 - New voice examples go in `skills/nzt-limitless/references/voice-and-examples.md` or `skills/nzt-soldier/references/examples.md`, with a clear "generic vs NZT" contrast.
 
@@ -91,7 +86,7 @@ If a proposed change makes the persona more convincing at the cost of any of the
 
 ### Validate and package
 
-Use the `skill-creator` scripts (`quick_validate.py`, `package_skill.py`) if available:
+Use the `skill-creator` scripts (`quick_validate.py`, `package_skill.py`) if available. They run as modules from the skill-creator skill's own directory, so pass absolute paths to the skill folders:
 
 ```bash
 python -m scripts.quick_validate skills/nzt-limitless
@@ -111,11 +106,30 @@ for s in nzt-limitless nzt-soldier; do
 done
 ```
 
-This mirrors `.github/workflows/release.yml`, which is the canonical packaging step.
+This mirrors `.github/workflows/release.yml`, which is the canonical packaging step. Where `zip` is missing (e.g. Git Bash on Windows), replace the zip line with `python -c "import shutil;shutil.make_archive('$s','zip','build','$s')" && mv "$s.zip" "$s.skill"`.
 
 Each `.skill` file is a zip with a top-level `<name>/` folder containing `SKILL.md`, `LICENSE`, and `references/`.
 
-### Testing changes
+### Verifying tooling changes
+
+After touching `.claude-plugin/`, the installers, or the skill layout:
+
+```bash
+claude plugin validate .
+
+# Plugin install in an isolated profile: expect "Skills (2)  nzt-limitless, nzt-soldier"
+export CLAUDE_CONFIG_DIR="$(mktemp -d)"
+claude plugin marketplace add ./ && claude plugin install nzt-48@nzt-48 && claude plugin details nzt-48
+unset CLAUDE_CONFIG_DIR
+
+# Installers against temp dirs (never your real ~/.claude or ~/.agents)
+bash -n install.sh
+T="$(mktemp -d)"; CLAUDE_SKILLS_DIR="$T/claude" CODEX_SKILLS_DIR="$T/codex" bash install.sh all && find "$T" -type f
+```
+
+PowerShell: set `$env:CLAUDE_SKILLS_DIR` / `$env:CODEX_SKILLS_DIR` to a temp dir and run `.\install.ps1 -Target all`. Each target should contain `nzt-limitless/` and `nzt-soldier/`, each with `SKILL.md`, `LICENSE`, `references/`.
+
+### Testing skill changes
 
 This is a subjective-output skill, so evaluate qualitatively. After any change to a `SKILL.md`, run at least these prompts and read the results.
 
@@ -158,4 +172,3 @@ If you add a skill, add its name to `install.sh`, `install.ps1`, and `release.ym
 ## Known placeholders to fix before publishing
 
 - `LICENSE`: confirm the copyright holder name.
-- `README.md`: point the docs link to a more specific Skills page if available.
