@@ -1,4 +1,4 @@
-# Install the NZT-48 skill for Claude Code and/or Codex (Windows PowerShell 5.1+).
+# Install the NZT-48 skills (nzt-limitless, nzt-soldier) for Claude Code and/or Codex (Windows PowerShell 5.1+).
 #
 # From a clone:   .\install.ps1 [-Target claude|codex|all]
 # Without clone:  & ([scriptblock]::Create((irm https://raw.githubusercontent.com/yintong-zhou/NZT-48/main/install.ps1))) -Target all
@@ -14,13 +14,13 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $Repo = 'yintong-zhou/NZT-48'
-$Skill = 'nzt-48'
+$Skills = @('nzt-limitless', 'nzt-soldier')
+$Legacy = 'nzt-48'
 $Ref = if ($env:NZT48_REF) { $env:NZT48_REF } else { 'main' }
-$Files = @('SKILL.md', 'references', 'README.md', 'LICENSE')
 
-# Use the local checkout when the script sits next to SKILL.md, otherwise download.
+# Use the local checkout when the script sits next to skills\, otherwise download.
 $Tmp = $null
-if ($PSScriptRoot -and (Test-Path (Join-Path $PSScriptRoot 'SKILL.md'))) {
+if ($PSScriptRoot -and (Test-Path (Join-Path $PSScriptRoot 'skills\nzt-limitless\SKILL.md'))) {
     $Src = $PSScriptRoot
 } else {
     $Tmp = Join-Path ([IO.Path]::GetTempPath()) ("nzt48-" + [guid]::NewGuid())
@@ -34,13 +34,19 @@ if ($PSScriptRoot -and (Test-Path (Join-Path $PSScriptRoot 'SKILL.md'))) {
 }
 
 function Install-To([string]$Root) {
-    $Dest = Join-Path $Root $Skill
-    if (Test-Path $Dest) { Remove-Item -Recurse -Force $Dest }
-    New-Item -ItemType Directory -Force -Path $Dest | Out-Null
-    foreach ($f in $Files) {
-        Copy-Item -Recurse -Path (Join-Path $Src $f) -Destination $Dest
+    New-Item -ItemType Directory -Force -Path $Root | Out-Null
+    $LegacyDir = Join-Path $Root $Legacy
+    if (Test-Path $LegacyDir) {
+        Remove-Item -Recurse -Force $LegacyDir
+        Write-Host "Removed legacy $LegacyDir"
     }
-    Write-Host "Installed $Skill -> $Dest"
+    foreach ($s in $Skills) {
+        $Dest = Join-Path $Root $s
+        if (Test-Path $Dest) { Remove-Item -Recurse -Force $Dest }
+        Copy-Item -Recurse -Path (Join-Path $Src "skills\$s") -Destination $Dest
+        Copy-Item -Path (Join-Path $Src 'LICENSE') -Destination $Dest
+        Write-Host "Installed $s -> $Dest"
+    }
 }
 
 try {
@@ -52,7 +58,7 @@ try {
         $root = if ($env:CODEX_SKILLS_DIR) { $env:CODEX_SKILLS_DIR } else { Join-Path $HOME '.agents\skills' }
         Install-To $root
     }
-    Write-Host 'Done. Restart Claude Code / Codex to load the skill.'
+    Write-Host 'Done. Restart Claude Code / Codex to load the skills.'
 } finally {
     if ($Tmp) { Remove-Item -Recurse -Force $Tmp -ErrorAction SilentlyContinue }
 }
