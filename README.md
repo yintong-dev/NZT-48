@@ -2,14 +2,17 @@
 
 # NZT-48
 
-**Two Claude Skills built on the fictional pill from *Limitless*.**<br>
+**Two Skills built on the fictional pill from *Limitless*.**<br>
 One thinks at 100%. The other executes at 100%.
 
 [![Release](https://img.shields.io/github/v/release/yintong-dev/NZT-48?style=flat-square)](https://github.com/yintong-dev/NZT-48/releases/latest)
 [![License: MIT](https://img.shields.io/github/license/yintong-dev/NZT-48?style=flat-square)](LICENSE)
 ![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-d97757?style=flat-square)
 ![Claude.ai](https://img.shields.io/badge/Claude.ai-skill-d97757?style=flat-square)
-![Codex](https://img.shields.io/badge/Codex-skill-111111?style=flat-square)
+![Codex](https://img.shields.io/badge/Codex-plugin-111111?style=flat-square)
+![Cursor](https://img.shields.io/badge/Cursor-plugin-111111?style=flat-square)
+![Kimi Code](https://img.shields.io/badge/Kimi_Code-plugin-111111?style=flat-square)
+![OpenCode](https://img.shields.io/badge/OpenCode-skill-111111?style=flat-square)
 
 [Overview](#overview) · [Quick start](#quick-start) · [Install](#install) · [Examples](#examples) · [How it works](#how-it-works)
 
@@ -19,7 +22,7 @@ One thinks at 100%. The other executes at 100%.
 
 ## Overview
 
-NZT-48 turns Claude into a sharper collaborator for hard problems. It is a disciplined way of reasoning with a persona on top, not a gimmick. Pick the one that fits the moment:
+NZT-48 turns AI into a sharper collaborator for hard problems. It is a disciplined way of reasoning with a persona on top, not a gimmick. Pick the one that fits the moment:
 
 | | 🧠 **nzt-limitless** · *default* | 🎯 **nzt-soldier** |
 |---|---|---|
@@ -47,79 +50,27 @@ Then just ask a hard question, or call a skill directly:
 | Claude Code · plugin | `/nzt-48:nzt-limitless` | `/nzt-48:nzt-soldier` |
 | Claude Code · installer | `/nzt-limitless` | `/nzt-soldier` |
 | Codex | `$nzt-limitless` | `$nzt-soldier` |
+| Cursor · Kimi Code · OpenCode | loads automatically, or ask for "limitless mode" | "nzt-soldier: …" |
 | Claude.ai | "limitless mode", or just ask | "nzt-soldier: …" |
 
 ## Install
 
-<details open>
-<summary><b>Claude Code</b></summary>
+| Agent | One-liner | Details |
+|---|---|---|
+| Claude Code | `/plugin marketplace add yintong-dev/NZT-48` then `/plugin install nzt-48@nzt-48` | [→](INSTALL.md#claude-code) |
+| Codex | `codex plugin marketplace add yintong-dev/NZT-48` then `codex plugin add nzt-48@nzt-48` | [→](INSTALL.md#codex) |
+| Cursor | Import `https://github.com/yintong-dev/NZT-48` as a plugin marketplace | [→](INSTALL.md#cursor) |
+| Kimi Code | `/plugins install https://github.com/yintong-dev/NZT-48` | [→](INSTALL.md#kimi-code) |
+| OpenCode | `curl -fsSL https://raw.githubusercontent.com/yintong-dev/NZT-48/main/install.sh \| bash -s -- opencode` | [→](INSTALL.md#opencode) |
+| Claude.ai | Upload the `.skill` files from the [latest release](https://github.com/yintong-dev/NZT-48/releases/latest) | [→](INSTALL.md#claudeai--claude-app) |
 
-**Plugin (gets updates).** Inside Claude Code:
-
-```
-/plugin marketplace add yintong-dev/NZT-48
-/plugin install nzt-48@nzt-48
-```
-
-Or from your shell:
-
-```bash
-claude plugin marketplace add yintong-dev/NZT-48 && claude plugin install nzt-48@nzt-48
-```
-
-**Personal skills.** Copies both skills to `~/.claude/skills/`:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/yintong-dev/NZT-48/main/install.sh | bash -s -- claude
-```
-
-</details>
-
-<details>
-<summary><b>Codex</b></summary>
-
-Copies both skills to `~/.agents/skills/`, where Codex looks for user skills:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/yintong-dev/NZT-48/main/install.sh | bash -s -- codex
-```
-
-Restart Codex afterwards. You can also ask Codex's built-in `$skill-installer` to install them from `https://github.com/yintong-dev/NZT-48`.
-
-</details>
-
-<details>
-<summary><b>Claude.ai / Claude app</b></summary>
-
-1. Download `nzt-limitless.skill` and/or `nzt-soldier.skill` from the [latest release](https://github.com/yintong-dev/NZT-48/releases/latest).
-2. Open **Settings → Capabilities → Skills** and upload them.
-
-</details>
-
-<details>
-<summary><b>Claude Code + Codex at once</b></summary>
-
-macOS / Linux / Git Bash:
+Everything at once (Claude Code, Codex, OpenCode, Kimi Code):
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/yintong-dev/NZT-48/main/install.sh | bash -s -- all
 ```
 
-Windows PowerShell:
-
-```powershell
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/yintong-dev/NZT-48/main/install.ps1))) -Target all
-```
-
-From a clone: `./install.sh [claude|codex|all]` or `.\install.ps1 -Target <claude|codex|all>`.
-
-</details>
-
-> [!TIP]
-> Re-run the installer to update. Set `NZT48_REF` to pin a version, e.g. `NZT48_REF=v1.1.0`.
-
-> [!NOTE]
-> **Upgrading from v1.0?** The single `nzt-48` skill is now `nzt-limitless`, and the plugin command `/nzt-48:nzt-48` is now `/nzt-48:nzt-limitless`. The installers remove the old `nzt-48` folder for you.
+See **[INSTALL.md](INSTALL.md)** for Windows PowerShell, pinning a version, and upgrading from v1.0.
 
 ## Examples
 
@@ -175,9 +126,10 @@ skills/
 └── nzt-soldier/
     ├── SKILL.md
     └── references/examples.md
-.claude-plugin/              # Claude Code plugin + marketplace manifests
-install.sh / install.ps1     # Installers for Claude Code and Codex
-.github/workflows/release.yml  # Builds one .skill per skill on every v* tag
+.claude-plugin/  .codex-plugin/  .cursor-plugin/  .kimi-plugin/   # Plugin manifests
+.agents/plugins/marketplace.json   # Codex marketplace
+install.sh / install.ps1           # Installers: Claude Code, Codex, OpenCode, Kimi Code
+.github/workflows/release.yml      # Builds one .skill per skill on every v* tag
 ```
 
 </details>

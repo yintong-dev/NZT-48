@@ -15,5 +15,7 @@
     "decision-making",
     "limitless",
     "soldier"
-  ]
+  ],
+  "displayName": "NZT-48",
+  "skills": "./skills/"
 }

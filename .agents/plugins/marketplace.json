@@ -1,0 +1,20 @@
+{
+  "name": "nzt-48",
+  "interface": {
+    "displayName": "NZT-48"
+  },
+  "plugins": [
+    {
+      "name": "nzt-48",
+      "source": {
+        "source": "url",
+        "url": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

@@ -1,25 +1,27 @@
 #!/usr/bin/env bash
-# Install the NZT-48 skills (nzt-limitless, nzt-soldier) for Claude Code and/or Codex.
+# Install the NZT-48 skills (nzt-limitless, nzt-soldier) for Claude Code, Codex, OpenCode and/or Kimi Code.
 #
-# From a clone:   ./install.sh [claude|codex|all]
-# Without clone:  curl -fsSL https://raw.githubusercontent.com/yintong-zhou/NZT-48/main/install.sh | bash -s -- [claude|codex|all]
+# From a clone:   ./install.sh [claude|codex|opencode|kimi|all]
+# Without clone:  curl -fsSL https://raw.githubusercontent.com/yintong-dev/NZT-48/main/install.sh | bash -s -- [claude|codex|opencode|kimi|all]
 #
 # Environment overrides:
 #   NZT48_REF         git ref to download when not run from a clone (default: main)
 #   CLAUDE_SKILLS_DIR default: ~/.claude/skills
-#   CODEX_SKILLS_DIR  default: ~/.agents/skills
+#   CODEX_SKILLS_DIR  default: ~/.agents/skills (also read by OpenCode and Kimi Code)
+#   OPENCODE_SKILLS_DIR default: ~/.config/opencode/skills
+#   KIMI_SKILLS_DIR   default: $KIMI_CODE_HOME/skills or ~/.kimi-code/skills
 set -euo pipefail
 
-REPO="yintong-zhou/NZT-48"
+REPO="yintong-dev/NZT-48"
 SKILLS="nzt-limitless nzt-soldier"
 LEGACY="nzt-48"
 REF="${NZT48_REF:-main}"
 TARGET="${1:-all}"
 
 case "$TARGET" in
-  claude|codex|all) ;;
-  -h|--help) sed -n '2,11p' "$0" 2>/dev/null || true; exit 0 ;;
-  *) echo "Usage: install.sh [claude|codex|all]" >&2; exit 1 ;;
+  claude|codex|opencode|kimi|all) ;;
+  -h|--help) sed -n '2,13p' "$0" 2>/dev/null || true; exit 0 ;;
+  *) echo "Usage: install.sh [claude|codex|opencode|kimi|all]" >&2; exit 1 ;;
 esac
 
 # Use the local checkout when the script sits next to skills/, otherwise download.
@@ -63,5 +65,11 @@ fi
 if [ "$TARGET" = "codex" ] || [ "$TARGET" = "all" ]; then
   install_to "${CODEX_SKILLS_DIR:-$HOME/.agents/skills}"
 fi
+if [ "$TARGET" = "opencode" ] || [ "$TARGET" = "all" ]; then
+  install_to "${OPENCODE_SKILLS_DIR:-$HOME/.config/opencode/skills}"
+fi
+if [ "$TARGET" = "kimi" ] || [ "$TARGET" = "all" ]; then
+  install_to "${KIMI_SKILLS_DIR:-${KIMI_CODE_HOME:-$HOME/.kimi-code}/skills}"
+fi
 
-echo "Done. Restart Claude Code / Codex to load the skills."
+echo "Done. Restart your agent (or start a new session) to load the skills."

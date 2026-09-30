@@ -17,8 +17,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```
 skills/<name>/SKILL.md + references/   # The two skills (the only shipped content, plus LICENSE)
-.claude-plugin/                        # plugin.json + marketplace.json (repo root = plugin + marketplace)
-install.sh / install.ps1               # Installers: ~/.claude/skills (Claude Code), ~/.agents/skills (Codex)
+.claude-plugin/                        # Claude Code plugin.json + marketplace.json
+.codex-plugin/ .cursor-plugin/ .kimi-plugin/   # Codex, Cursor, Kimi Code plugin.json
+.agents/plugins/marketplace.json       # Codex marketplace
+install.sh / install.ps1               # Installers: claude, codex, opencode, kimi, all
+INSTALL.md                             # Per-agent install guide (README links here)
 .github/workflows/release.yml          # Builds one .skill per skill on every v* tag
 docs/superpowers/                      # Superpowers specs and plans (local only, git-ignored)
 ```
@@ -27,7 +30,9 @@ Only `skills/<name>/` (plus `LICENSE`, copied into each skill folder at install/
 
 ### How distribution fits together
 
-- **Plugin:** the repo root is both the marketplace (`source: "./"`) and the plugin. Claude Code auto-discovers `skills/*/SKILL.md`. A root-level `SKILL.md` would only load if `skills/` did not exist, so never put one back at the root.
+- **Plugins:** the repo root is the plugin for every agent, and every manifest points at the same `skills/` folder (Codex and Kimi via `"skills": "./skills/"`, Claude Code and Cursor by auto-discovery). Nothing is duplicated. A root-level `SKILL.md` would only load in Claude Code if `skills/` did not exist, so never put one back at the root.
+- **Marketplaces:** `.claude-plugin/marketplace.json` (Claude Code, `source: "./"`) and `.agents/plugins/marketplace.json` (Codex, `source: {source: url, url: ./}`). Cursor imports the repo directly; Kimi installs from the GitHub URL.
+- **Installer targets:** `claude` → `~/.claude/skills`, `codex` → `~/.agents/skills` (also read by OpenCode and Kimi), `opencode` → `~/.config/opencode/skills`, `kimi` → `$KIMI_CODE_HOME/skills` (default `~/.kimi-code/skills`). Each has a `*_SKILLS_DIR` override.
 - **Installers:** use the local checkout when `skills/nzt-limitless/SKILL.md` sits next to the script, otherwise download the `NZT48_REF` tarball/zip from GitHub. Before touching anything they check every skill exists in the source and abort otherwise (protects users pinning a pre-1.1.0 ref). Then they delete a legacy `<target>/nzt-48` folder and replace each skill folder wholesale.
 - **Skill list lives in three places:** `install.sh` (`SKILLS`), `install.ps1` (`$Skills`), `release.yml` (the `for s in` loop). Keep them in sync.
 - **Line endings:** `.gitattributes` forces LF on `*.sh`; without it a Windows clone breaks `install.sh` (`set -euo pipefail\r`).
@@ -80,6 +85,7 @@ If a proposed change makes the persona more convincing at the cost of any of the
 - `README.md` and all repo files are in English.
 - Keep every published Markdown file under 200 lines. If it grows past that, split it by topic into separate `.md` files and link them. Superpowers specs and plans in `docs/superpowers/` are git-ignored and exempt.
 - Keep the disclaimer in the README: NZT-48 is fictional and the "10% of the brain" idea is a myth.
+- Install instructions live in `INSTALL.md`; the README keeps only the one-liner table. The GitHub owner is `yintong-dev` (the old `yintong-zhou` URL redirects).
 - New voice examples go in `skills/nzt-limitless/references/voice-and-examples.md` or `skills/nzt-soldier/references/examples.md`, with a clear "generic vs NZT" contrast.
 
 ## Working on the skills
@@ -116,6 +122,11 @@ After touching `.claude-plugin/`, the installers, or the skill layout:
 
 ```bash
 claude plugin validate .
+
+# Codex plugin in an isolated home: expect "nzt-48@nzt-48 (installed, enabled)"
+export CODEX_HOME="$(mktemp -d)"
+codex plugin marketplace add "$(pwd)" && codex plugin add nzt-48@nzt-48 && codex plugin list
+unset CODEX_HOME
 
 # Plugin install in an isolated profile: expect "Skills (2)  nzt-limitless, nzt-soldier"
 export CLAUDE_CONFIG_DIR="$(mktemp -d)"
@@ -154,7 +165,7 @@ A change is good only if all of these still behave correctly.
 ### Release process
 
 1. Update `skills/*/SKILL.md` / `references/` and re-run the test prompts.
-2. Bump `version` in `.claude-plugin/plugin.json` (Claude Code plugin users only get updates when it changes).
+2. Bump `version` in all four manifests: `.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`, `.kimi-plugin/` `plugin.json` (plugin users only get updates when it changes). They must match.
 3. Run `claude plugin validate .` and validate the skill.
 4. Commit with a clear message (imperative mood, e.g. "Tighten honesty rules for market questions").
 5. Tag the same version (`git tag v1.x.x`) and push the tag. The Release workflow builds `nzt-limitless.skill` and `nzt-soldier.skill` and creates the GitHub Release.

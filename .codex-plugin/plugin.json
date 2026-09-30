@@ -15,5 +15,13 @@
     "decision-making",
     "limitless",
     "soldier"
-  ]
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "NZT-48",
+    "shortDescription": "Think at 100% (nzt-limitless) or execute at 100% (nzt-soldier)",
+    "developerName": "Yintong Zhou",
+    "category": "Productivity",
+    "websiteURL": "https://github.com/yintong-dev/NZT-48"
+  }
 }

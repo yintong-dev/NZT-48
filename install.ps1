@@ -1,19 +1,21 @@
-# Install the NZT-48 skills (nzt-limitless, nzt-soldier) for Claude Code and/or Codex (Windows PowerShell 5.1+).
+# Install the NZT-48 skills (nzt-limitless, nzt-soldier) for Claude Code, Codex, OpenCode and/or Kimi Code (Windows PowerShell 5.1+).
 #
-# From a clone:   .\install.ps1 [-Target claude|codex|all]
-# Without clone:  & ([scriptblock]::Create((irm https://raw.githubusercontent.com/yintong-zhou/NZT-48/main/install.ps1))) -Target all
+# From a clone:   .\install.ps1 [-Target claude|codex|opencode|kimi|all]
+# Without clone:  & ([scriptblock]::Create((irm https://raw.githubusercontent.com/yintong-dev/NZT-48/main/install.ps1))) -Target all
 #
 # Environment overrides:
 #   NZT48_REF         git ref to download when not run from a clone (default: main)
 #   CLAUDE_SKILLS_DIR default: ~\.claude\skills
-#   CODEX_SKILLS_DIR  default: ~\.agents\skills
+#   CODEX_SKILLS_DIR  default: ~\.agents\skills (also read by OpenCode and Kimi Code)
+#   OPENCODE_SKILLS_DIR default: ~\.config\opencode\skills
+#   KIMI_SKILLS_DIR   default: $env:KIMI_CODE_HOME\skills or ~\.kimi-code\skills
 param(
-    [ValidateSet('claude', 'codex', 'all')]
+    [ValidateSet('claude', 'codex', 'opencode', 'kimi', 'all')]
     [string]$Target = 'all'
 )
 $ErrorActionPreference = 'Stop'
 
-$Repo = 'yintong-zhou/NZT-48'
+$Repo = 'yintong-dev/NZT-48'
 $Skills = @('nzt-limitless', 'nzt-soldier')
 $Legacy = 'nzt-48'
 $Ref = if ($env:NZT48_REF) { $env:NZT48_REF } else { 'main' }
@@ -64,7 +66,16 @@ try {
         $root = if ($env:CODEX_SKILLS_DIR) { $env:CODEX_SKILLS_DIR } else { Join-Path $HOME '.agents\skills' }
         Install-To $root
     }
-    Write-Host 'Done. Restart Claude Code / Codex to load the skills.'
+    if ($Target -in 'opencode', 'all') {
+        $root = if ($env:OPENCODE_SKILLS_DIR) { $env:OPENCODE_SKILLS_DIR } else { Join-Path $HOME '.config\opencode\skills' }
+        Install-To $root
+    }
+    if ($Target -in 'kimi', 'all') {
+        $kimiHome = if ($env:KIMI_CODE_HOME) { $env:KIMI_CODE_HOME } else { Join-Path $HOME '.kimi-code' }
+        $root = if ($env:KIMI_SKILLS_DIR) { $env:KIMI_SKILLS_DIR } else { Join-Path $kimiHome 'skills' }
+        Install-To $root
+    }
+    Write-Host 'Done. Restart your agent (or start a new session) to load the skills.'
 } finally {
     if ($Tmp) { Remove-Item -Recurse -Force $Tmp -ErrorAction SilentlyContinue }
 }
