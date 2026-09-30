@@ -1,12 +1,19 @@
 {
   "name": "nzt-48",
-  "version": "1.0.0",
-  "description": "Think and sound like someone on the fictional NZT-48 from Limitless: reframe, connect patterns across fields, decide, and honestly attack your own answer.",
+  "version": "1.1.0",
+  "description": "Two NZT-48 skills: nzt-limitless (fast, pattern-connecting, decisive thinking) and nzt-soldier (cold, goal-obsessed, minimal-word execution).",
   "author": {
     "name": "Yintong Zhou"
   },
   "homepage": "https://github.com/yintong-zhou/NZT-48",
   "repository": "https://github.com/yintong-zhou/NZT-48",
   "license": "MIT",
-  "keywords": ["skill", "persona", "reasoning", "decision-making", "limitless"]
+  "keywords": [
+    "skill",
+    "persona",
+    "reasoning",
+    "decision-making",
+    "limitless",
+    "soldier"
+  ]
 }
