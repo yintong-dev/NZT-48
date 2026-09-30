@@ -24,22 +24,62 @@ When it triggers automatically, it uses a lighter version: the clarity without t
 ## Install
 
 ### Claude.ai / Claude app
-1. Download `nzt-48.skill` from the [Releases](../../releases) page (or zip the `nzt-48/` folder).
+1. Download `nzt-48.skill` from the latest [Release](https://github.com/yintong-zhou/NZT-48/releases/latest).
 2. Go to **Settings → Capabilities → Skills** and upload it.
 
 ### Claude Code
-```bash
-git clone https://github.com/<your-username>/nzt-48.git
-cp -r nzt-48 ~/.claude/skills/nzt-48
+
+**Option A: plugin marketplace (recommended, gets updates).** Inside Claude Code:
+
 ```
+/plugin marketplace add yintong-zhou/NZT-48
+/plugin install nzt-48@nzt-48
+```
+
+Or from your shell: `claude plugin marketplace add yintong-zhou/NZT-48 && claude plugin install nzt-48@nzt-48`.
+
+**Option B: personal skill.** Copies the skill to `~/.claude/skills/nzt-48`:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/yintong-zhou/NZT-48/main/install.sh | bash -s -- claude
+```
+
+### Codex
+
+Copies the skill to `~/.agents/skills/nzt-48`, where Codex looks for user skills:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/yintong-zhou/NZT-48/main/install.sh | bash -s -- codex
+```
+
+Restart Codex afterwards. Inside Codex you can also ask the built-in `$skill-installer` to install the skill from `https://github.com/yintong-zhou/NZT-48`.
+
+### Both at once
+
+macOS / Linux / Git Bash:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/yintong-zhou/NZT-48/main/install.sh | bash -s -- all
+```
+
+Windows PowerShell:
+
+```powershell
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/yintong-zhou/NZT-48/main/install.ps1))) -Target all
+```
+
+From a clone, run `./install.sh [claude|codex|all]` or `.\install.ps1 -Target <claude|codex|all>`. Set `NZT48_REF` to install a specific tag (e.g. `NZT48_REF=v1.0.0`). Re-running the installer updates the skill in place.
 
 ## Repo structure
 
 ```
-nzt-48/
+.
 ├── SKILL.md                        # The skill itself
 ├── references/
 │   └── voice-and-examples.md       # Voice guide with before/after examples
+├── .claude-plugin/                 # Claude Code plugin + marketplace manifests
+├── install.sh / install.ps1        # Installers for Claude Code and Codex
+├── .github/workflows/release.yml   # Builds nzt-48.skill on every v* tag
 ├── README.md
 └── LICENSE
 ```

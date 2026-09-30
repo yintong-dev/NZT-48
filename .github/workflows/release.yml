@@ -1,0 +1,26 @@
+# Build nzt-48.skill and attach it to a GitHub Release when a v* tag is pushed.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Package nzt-48.skill
+        run: |
+          mkdir -p build/nzt-48
+          cp -R SKILL.md references README.md LICENSE build/nzt-48/
+          cd build && zip -r ../nzt-48.skill nzt-48
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" nzt-48.skill --title "$GITHUB_REF_NAME" --generate-notes

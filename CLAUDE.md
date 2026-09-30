@@ -20,8 +20,15 @@ Guidance for Claude (Claude Code, Claude.ai, or any agent) when working in this 
 │   └── voice-and-examples.md      # Voice dials, before/after examples, failure modes
 ├── README.md                      # Public-facing docs and install instructions
 ├── LICENSE                        # MIT
+├── .claude-plugin/
+│   ├── plugin.json                # Claude Code plugin manifest (repo root = plugin root)
+│   └── marketplace.json           # Makes the repo installable via /plugin marketplace add
+├── install.sh / install.ps1       # Installers: ~/.claude/skills (Claude Code), ~/.agents/skills (Codex)
+├── .github/workflows/release.yml  # Packages nzt-48.skill and attaches it on every v* tag
 └── CLAUDE.md                      # This file (repo-only, NOT shipped in the .skill package)
 ```
+
+Only `SKILL.md`, `references/`, `README.md`, and `LICENSE` are the skill. Everything else is distribution tooling and is never copied into the `.skill` package or the installed skill folder.
 
 ## The non-negotiables (never weaken these)
 
@@ -71,11 +78,14 @@ python -m scripts.quick_validate <path-to-this-repo>
 python -m scripts.package_skill <path-to-this-repo> <output-dir>
 ```
 
-Manual fallback, run from the parent directory of the repo folder (assuming the folder is named `nzt-48`):
+Manual fallback, run from the repo root:
 
 ```bash
-zip -r nzt-48.skill nzt-48 -x "nzt-48/.git/*" "nzt-48/CLAUDE.md" "nzt-48/.gitignore"
+mkdir -p build/nzt-48 && cp -R SKILL.md references README.md LICENSE build/nzt-48/
+(cd build && zip -r ../nzt-48.skill nzt-48)
 ```
+
+This mirrors `.github/workflows/release.yml`, which is the canonical packaging step.
 
 The `.skill` file is a zip with a top-level `nzt-48/` folder containing `SKILL.md`, `README.md`, `LICENSE`, and `references/`.
 
@@ -95,10 +105,12 @@ A change is good only if all six still behave correctly.
 ### Release process
 
 1. Update `SKILL.md` / `references/` and re-run the six test prompts.
-2. Validate and package the `.skill` file.
-3. Commit with a clear message (imperative mood, e.g. "Tighten honesty rules for market questions").
-4. Tag a version (`git tag v1.x.x`) and push.
-5. Create a GitHub Release and attach `nzt-48.skill`.
+2. Bump `version` in `.claude-plugin/plugin.json` (Claude Code plugin users only get updates when it changes).
+3. Run `claude plugin validate .` and validate the skill.
+4. Commit with a clear message (imperative mood, e.g. "Tighten honesty rules for market questions").
+5. Tag the same version (`git tag v1.x.x`) and push the tag. The Release workflow builds `nzt-48.skill` and creates the GitHub Release.
+
+If you add a file to the skill, add it to the file list in `install.sh`, `install.ps1`, and `release.yml`.
 
 ## Things to avoid
 
@@ -106,10 +118,9 @@ A change is good only if all six still behave correctly.
 - Decorative cross-domain analogies that don't sharpen the point.
 - Claims that the skill unlocks real cognitive abilities in Claude or the user.
 - Quoting the film at length (copyright) instead of solving the user's problem.
-- Adding dependencies or scripts: this skill is pure instructions and should stay that way.
+- Adding dependencies or scripts to the skill itself: it is pure instructions and should stay that way. The installers and release workflow are repo tooling, not part of the skill.
 
 ## Known placeholders to fix before publishing
 
-- `README.md`: replace `<your-username>` in the clone URL with the real GitHub username.
 - `LICENSE`: confirm the copyright holder name.
 - `README.md`: point the docs link to a more specific Skills page if available.

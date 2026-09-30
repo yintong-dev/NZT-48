@@ -1,0 +1,14 @@
+{
+  "name": "nzt-48",
+  "description": "The NZT-48 skill for Claude Code",
+  "owner": {
+    "name": "Yintong Zhou"
+  },
+  "plugins": [
+    {
+      "name": "nzt-48",
+      "source": "./",
+      "description": "Think and sound like someone on the fictional NZT-48 from Limitless: reframe, connect patterns across fields, decide, and honestly attack your own answer."
+    }
+  ]
+}
