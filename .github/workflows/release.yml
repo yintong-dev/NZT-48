@@ -1,4 +1,4 @@
-# Build nzt-48.skill and attach it to a GitHub Release when a v* tag is pushed.
+# Build one .skill file per skill and attach them to a GitHub Release when a v* tag is pushed.
 name: Release
 
 on:
@@ -14,13 +14,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Package nzt-48.skill
+      - name: Package skills
         run: |
-          mkdir -p build/nzt-48
-          cp -R SKILL.md references README.md LICENSE build/nzt-48/
-          cd build && zip -r ../nzt-48.skill nzt-48
+          for s in nzt-limitless nzt-soldier; do
+            mkdir -p "build/$s"
+            cp -R "skills/$s/." "build/$s/"
+            cp LICENSE "build/$s/"
+            (cd build && zip -r "../$s.skill" "$s")
+          done
 
       - name: Create release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" nzt-48.skill --title "$GITHUB_REF_NAME" --generate-notes
+        run: gh release create "$GITHUB_REF_NAME" nzt-limitless.skill nzt-soldier.skill --title "$GITHUB_REF_NAME" --generate-notes
