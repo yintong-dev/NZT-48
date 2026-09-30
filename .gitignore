@@ -1,2 +1,4 @@
 # Packaged skill: attach to GitHub Releases, do not version
 *.skill
+.claude/
+.superpowers/
