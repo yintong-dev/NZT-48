@@ -34,6 +34,14 @@ else
   SRC="$(find "$TMP" -mindepth 1 -maxdepth 1 -type d | head -n 1)"
 fi
 
+# Refuse to touch anything if the source lacks a skill (e.g. a ref older than v1.1.0).
+for s in $SKILLS; do
+  if [ ! -f "$SRC/skills/$s/SKILL.md" ]; then
+    echo "Error: $REF has no skills/$s (ref predates v1.1.0?). Nothing was changed." >&2
+    exit 1
+  fi
+done
+
 install_to() {
   local root="$1"
   mkdir -p "$root"

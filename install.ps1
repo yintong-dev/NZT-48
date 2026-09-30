@@ -50,6 +50,12 @@ function Install-To([string]$Root) {
 }
 
 try {
+    # Refuse to touch anything if the source lacks a skill (e.g. a ref older than v1.1.0).
+    foreach ($s in $Skills) {
+        if (-not (Test-Path -LiteralPath (Join-Path $Src "skills\$s\SKILL.md"))) {
+            throw "$Ref has no skills\$s (ref predates v1.1.0?). Nothing was changed."
+        }
+    }
     if ($Target -in 'claude', 'all') {
         $root = if ($env:CLAUDE_SKILLS_DIR) { $env:CLAUDE_SKILLS_DIR } else { Join-Path $HOME '.claude\skills' }
         Install-To $root
