@@ -5,8 +5,8 @@
 **Two Skills built on the fictional pill from *Limitless*.**<br>
 One thinks at 100%. The other executes at 100%.
 
-[![Release](https://img.shields.io/github/v/release/yintong-dev/NZT-48?style=flat-square)](https://github.com/yintong-dev/NZT-48/releases/latest)
-[![License: MIT](https://img.shields.io/github/license/yintong-dev/NZT-48?style=flat-square)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/yintong-zhou/NZT-48?style=flat-square)](https://github.com/yintong-zhou/NZT-48/releases/latest)
+[![License: MIT](https://img.shields.io/github/license/yintong-zhou/NZT-48?style=flat-square)](LICENSE)
 ![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-d97757?style=flat-square)
 ![Claude.ai](https://img.shields.io/badge/Claude.ai-skill-d97757?style=flat-square)
 ![Codex](https://img.shields.io/badge/Codex-plugin-111111?style=flat-square)
@@ -39,7 +39,7 @@ Both skills share the same rules: they never invent facts, they say where they m
 **Claude Code** (recommended):
 
 ```
-/plugin marketplace add yintong-dev/NZT-48
+/plugin marketplace add yintong-zhou/NZT-48
 /plugin install nzt-48@nzt-48
 ```
 
@@ -57,17 +57,17 @@ Then just ask a hard question, or call a skill directly:
 
 | Agent | One-liner | Details |
 |---|---|---|
-| Claude Code | `/plugin marketplace add yintong-dev/NZT-48` then `/plugin install nzt-48@nzt-48` | [→](INSTALL.md#claude-code) |
-| Codex | `codex plugin marketplace add yintong-dev/NZT-48` then `codex plugin add nzt-48@nzt-48` | [→](INSTALL.md#codex) |
-| Cursor | Import `https://github.com/yintong-dev/NZT-48` as a plugin marketplace | [→](INSTALL.md#cursor) |
-| Kimi Code | `/plugins install https://github.com/yintong-dev/NZT-48` | [→](INSTALL.md#kimi-code) |
-| OpenCode | `curl -fsSL https://raw.githubusercontent.com/yintong-dev/NZT-48/main/install.sh \| bash -s -- opencode` | [→](INSTALL.md#opencode) |
-| Claude.ai | Upload the `.skill` files from the [latest release](https://github.com/yintong-dev/NZT-48/releases/latest) | [→](INSTALL.md#claudeai--claude-app) |
+| Claude Code | `/plugin marketplace add yintong-zhou/NZT-48` then `/plugin install nzt-48@nzt-48` | [→](INSTALL.md#claude-code) |
+| Codex | `codex plugin marketplace add yintong-zhou/NZT-48` then `codex plugin add nzt-48@nzt-48` | [→](INSTALL.md#codex) |
+| Cursor | Import `https://github.com/yintong-zhou/NZT-48` as a plugin marketplace | [→](INSTALL.md#cursor) |
+| Kimi Code | `/plugins install https://github.com/yintong-zhou/NZT-48` | [→](INSTALL.md#kimi-code) |
+| OpenCode | `curl -fsSL https://raw.githubusercontent.com/yintong-zhou/NZT-48/main/install.sh \| bash -s -- opencode` | [→](INSTALL.md#opencode) |
+| Claude.ai | Upload the `.skill` files from the [latest release](https://github.com/yintong-zhou/NZT-48/releases/latest) | [→](INSTALL.md#claudeai--claude-app) |
 
 Everything at once (Claude Code, Codex, OpenCode, Kimi Code):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yintong-dev/NZT-48/main/install.sh | bash -s -- all
+curl -fsSL https://raw.githubusercontent.com/yintong-zhou/NZT-48/main/install.sh | bash -s -- all
 ```
 
 See **[INSTALL.md](INSTALL.md)** for Windows PowerShell, pinning a version, and upgrading from v1.0.
