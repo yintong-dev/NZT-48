@@ -2,3 +2,5 @@
 *.skill
 .claude/
 .superpowers/
+# Superpowers specs and plans: local working files, not published
+docs/superpowers/

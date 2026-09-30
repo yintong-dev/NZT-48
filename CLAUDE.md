@@ -20,7 +20,7 @@ skills/<name>/SKILL.md + references/   # The two skills (the only shipped conten
 .claude-plugin/                        # plugin.json + marketplace.json (repo root = plugin + marketplace)
 install.sh / install.ps1               # Installers: ~/.claude/skills (Claude Code), ~/.agents/skills (Codex)
 .github/workflows/release.yml          # Builds one .skill per skill on every v* tag
-docs/superpowers/                      # Design specs and implementation plans (repo-only)
+docs/superpowers/                      # Superpowers specs and plans (local only, git-ignored)
 ```
 
 Only `skills/<name>/` (plus `LICENSE`, copied into each skill folder at install/package time) is shipped. Everything else is distribution tooling and is never copied into a `.skill` package or an installed skill folder.
@@ -78,7 +78,7 @@ If a proposed change makes the persona more convincing at the cost of any of the
 ### Docs
 
 - `README.md` and all repo files are in English.
-- Keep every published Markdown file under 200 lines. If it grows past that, split it by topic into separate `.md` files and link them. Exception: superpowers specs and plans in `docs/superpowers/` follow that skill's own format.
+- Keep every published Markdown file under 200 lines. If it grows past that, split it by topic into separate `.md` files and link them. Superpowers specs and plans in `docs/superpowers/` are git-ignored and exempt.
 - Keep the disclaimer in the README: NZT-48 is fictional and the "10% of the brain" idea is a myth.
 - New voice examples go in `skills/nzt-limitless/references/voice-and-examples.md` or `skills/nzt-soldier/references/examples.md`, with a clear "generic vs NZT" contrast.
 
